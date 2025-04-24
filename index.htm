@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QCS Stylock Market Predictor</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
+</head>
+<body>
+    <!-- Startup Dialog -->
+    <div class="startup-overlay" id="startup-overlay">
+        <div class="startup-dialog">
+            <h2>QCS Stylock Market Predictor</h2>
+            <p>Welcome to the Quantum Coherence System for market prediction. This tool uses advanced quantum algorithms to analyze and predict market trends.</p>
+            <p>Choose how you would like to start:</p>
+            <div class="startup-buttons">
+                <button id="start-live" class="primary-button">Start with Live Data</button>
+                <button id="start-simulation">Start with Simulation</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <header>
+            <div class="logo">
+                <div class="logo-text">QCS Stylock Market</div>
+                <div class="tagline">Powered by Quantum Coherence</div>
+            </div>
+            <div class="api-status">
+                <div class="api-indicator api-inactive" id="api-status"></div>
+                <span>API</span>
+            </div>
+            <div id="current-time"></div>
+            <div class="button-group">
+                <button id="toggle-mode">Live Market</button>
+                <button id="toggle-simulation" class="active">Simulation</button>
+            </div>
+        </header>
+
+        <!-- Market Banner -->
+        <div class="market-banner market-closed" id="market-banner">
+            <div>
+                <h3 id="market-status">Market Currently Closed</h3>
+                <p id="market-description">Regular trading hours are 9:30 AM - 4:00 PM ET, Monday-Friday.</p>
+            </div>
+            <div>
+                <div>Eastern Time: <span id="eastern-time">--:--:--</span></div>
+                <div>Local Time: <span id="local-time">--:--:--</span></div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <div class="control-group">
+                <div class="control">
+                    <label>Refresh Rate</label>
+                    <select id="refresh-rate">
+                        <option value="5000">5 seconds</option>
+                        <option value="10000" selected>10 seconds</option>
+                        <option value="30000">30 seconds</option>
+                    </select>
+                </div>
+                <div class="control">
+                    <label>Prediction Horizon</label>
+                    <select id="prediction-horizon">
+                        <option value="1d" selected>Day Trading (1 Day)</option>
+                        <option value="1w">Swing Trading (1 Week)</option>
+                        <option value="1m">Position Trading (1 Month)</option>
+                    </select>
+                </div>
+                <div class="control">
+                    <label>Coherence Protocol</label>
+                    <select id="coherence-protocol">
+                        <option value="QCA-DFS-1" selected>QCA-DFS-1 (Decoherence-Free Subspace)</option>
+                        <option value="QCA-DEC-1">QCA-DEC-1 (Dynamical Decoupling)</option>
+                        <option value="QCA-TOP-1">QCA-TOP-1 (Topological Protection)</option>
+                        <option value="QCA-NMEE-1">QCA-NMEE-1 (Non-Markovian Environment)</option>
+                    </select>
+                </div>
+                <div class="control" id="simulation-speed-control">
+                    <label>Simulation Speed</label>
+                    <div class="button-group">
+                        <button id="speed-down">-</button>
+                        <span id="speed-display" style="padding: 8px;">1x</span>
+                        <button id="speed-up">+</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard">
+            <div class="main-content">
+                <!-- Stock Header -->
+                <div class="card">
+                    <div class="stock-header">
+                        <div>
+                            <h2 id="selected-ticker">AAPL</h2>
+                            <div class="data-update">
+                                <span class="update-indicator"></span>
+                                <span id="last-update">Last updated: Just now</span>
+                            </div>
+                        </div>
+                        <div>
+                            <span id="current-stock-price" style="font-size: 24px; font-weight: bold;">Loading...</span>
+                            <span id="current-stock-change" class="change-up">...</span>
+                        </div>
+                    </div>
+                    <!-- Price Chart -->
+                    <div class="chart-container">
+                        <canvas id="priceChart"></canvas>
+                    </div>
+                    <!-- Volume Chart -->
+                    <div class="volume-chart-container">
+                        <canvas id="volumeChart"></canvas>
+                    </div>
+                </div>
+                
+                <!-- Prediction Panel -->
+                <div class="card">
+                    <h3>QCS Prediction</h3>
+                    <div class="prediction-panel">
+                        <div>
+                            <div class="prediction-item">
+                                <span class="label">Current Price:</span>
+                                <span id="prediction-current">Loading...</span>
+                            </div>
+                            <div class="prediction-item">
+                                <span class="label">Predicted Price:</span>
+                                <span id="prediction-price">Loading...</span>
+                            </div>
+                            <div class="prediction-item">
+                                <span class="label">Change:</span>
+                                <span id="prediction-change">Loading...</span>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="prediction-item">
+                                <span class="label">Confidence:</span>
+                                <span id="prediction-confidence">--.--%</span>
+                            </div>
+                            <div class="prediction-item">
+                                <span class="label">Support Level:</span>
+                                <span id="support-level">--</span>
+                            </div>
+                            <div class="prediction-item">
+                                <span class="label">Resistance Level:</span>
+                                <span id="resistance-level">--</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quantum Visualization -->
+                <div class="card">
+                    <h3>Quantum Coherence Visualization</h3>
+                    <div class="quantum-grid" id="quantum-grid">
+                        <!-- Quantum nodes will be generated by JavaScript -->
+                    </div>
+                    <div class="coherence-info">
+                        <div class="setting-row">
+                            <span class="setting-name">Coherence Protocol:</span>
+                            <span class="setting-value" id="current-protocol">QCA-DFS-1</span>
+                        </div>
+                        <div class="setting-row">
+                            <span class="setting-name">System Coherence:</span>
+                            <span class="setting-value" id="system-coherence">--.--%</span>
+                        </div>
+                        <div class="coherence-meter">
+                            <div class="coherence-level" id="coherence-meter-level" style="width: 0%;"></div>
+                        </div>
+                        <div class="setting-row">
+                            <span class="setting-name">Quantum State:</span>
+                            <span class="setting-value" style="font-family: monospace;">|ψ⟩ = 0.707|00⟩ + 0.707e<sup>iπ/4</sup>|11⟩</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="sidebar">
+                <!-- Watchlist -->
+                <div class="card">
+                    <h3>Watchlist</h3>
+                    <div class="watchlist" id="watchlist">
+                        <div class="watchlist-item selected" data-symbol="AAPL">
+                            <div>AAPL</div>
+                            <div>
+                                <span class="stock-price">Loading...</span>
+                                <span class="stock-change change-up">...</span>
+                            </div>
+                        </div>
+                        <div class="watchlist-item" data-symbol="MSFT">
+                            <div>MSFT</div>
+                            <div>
+                                <span class="stock-price">Loading...</span>
+                                <span class="stock-change change-up">...</span>
+                            </div>
+                        </div>
+                        <div class="watchlist-item" data-symbol="GOOGL">
+                            <div>GOOGL</div>
+                            <div>
+                                <span class="stock-price">Loading...</span>
+                                <span class="stock-change change-up">...</span>
+                            </div>
+                        </div>
+                        <div class="watchlist-item" data-symbol="AMZN">
+                            <div>AMZN</div>
+                            <div>
+                                <span class="stock-price">Loading...</span>
+                                <span class="stock-change change-up">...</span>
+                            </div>
+                        </div>
+                        <div class="watchlist-item" data-symbol="TSLA">
+                            <div>TSLA</div>
+                            <div>
+                                <span class="stock-price">Loading...</span>
+                                <span class="stock-change change-up">...</span>
+                            </div>
+                        </div>
+                        <div class="watchlist-item" data-symbol="NVDA">
+                            <div>NVDA</div>
+                            <div>
+                                <span class="stock-price">Loading...</span>
+                                <span class="stock-change change-up">...</span>
+                            </div>
+                        </div>
+                        <div class="watchlist-item" data-symbol="META">
+                            <div>META</div>
+                            <div>
+                                <span class="stock-price">Loading...</span>
+                                <span class="stock-change change-up">...</span>
+                            </div>
+                        </div>
+                        <!-- New added stocks -->
+                        <div class="watchlist-item" data-symbol="NFLX">
+                            <div>NFLX</div>
+                            <div>
+                                <span class="stock-price">Loading...</span>
+                                <span class="stock-change change-up">...</span>
+                            </div>
+                        </div>
+                        <div class="watchlist-item" data-symbol="ADBE">
+                            <div>ADBE</div>
+                            <div>
+                                <span class="stock-price">Loading...</span>
+                                <span class="stock-change change-up">...</span>
+                            </div>
+                        </div>
+                        <div class="watchlist-item" data-symbol="PYPL">
+                            <div>PYPL</div>
+                            <div>
+                                <span class="stock-price">Loading...</span>
+                                <span class="stock-change change-up">...</span>
+                            </div>
+                        </div>
+                        <div class="watchlist-item" data-symbol="INTC">
+                            <div>INTC</div>
+                            <div>
+                                <span class="stock-price">Loading...</span>
+                                <span class="stock-change change-up">...</span>
+                            </div>
+                        </div>
+                        <div class="watchlist-item" data-symbol="CSCO">
+                            <div>CSCO</div>
+                            <div>
+                                <span class="stock-price">Loading...</span>
+                                <span class="stock-change change-up">...</span>
+                            </div>
+                        </div>
+                        <div class="watchlist-item" data-symbol="CMCSA">
+                            <div>CMCSA</div>
+                            <div>
+                                <span class="stock-price">Loading...</span>
+                                <span class="stock-change change-up">...</span>
+                            </div>
+                        </div>
+                        <div class="watchlist-item" data-symbol="PEP">
+                            <div>PEP</div>
+                            <div>
+                                <span class="stock-price">Loading...</span>
+                                <span class="stock-change change-up">...</span>
+                            </div>
+                        </div>
+                        <div class="watchlist-item" data-symbol="NKLA">
+                            <div>NKLA</div>
+                            <div>
+                                <span class="stock-price">Loading...</span>
+                                <span class="stock-change change-up">...</span>
+                            </div>
+                        </div>
+                        <div class="watchlist-item" data-symbol="ABVE">
+                            <div>ABVE</div>
+                            <div>
+                                <span class="stock-price">Loading...</span>
+                                <span class="stock-change change-up">...</span>
+                            </div>
+                        </div>
+                        <div class="watchlist-item" data-symbol="CNTM">
+                            <div>CNTM</div>
+                            <div>
+                                <span class="stock-price">Loading...</span>
+                                <span class="stock-change change-up">...</span>
+                            </div>
+                        </div>
+                        <div class="watchlist-item crypto" data-symbol="BTC-USD">
+                            <div>BTC-USD</div>
+                            <div>
+                                <span class="stock-price">Loading...</span>
+                                <span class="stock-change change-up">...</span>
+                            </div>
+                        </div>
+                        <div class="watchlist-item crypto" data-symbol="ETH-USD">
+                            <div>ETH-USD</div>
+                            <div>
+                                <span class="stock-price">Loading...</span>
+                                <span class="stock-change change-up">...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quantum Settings Card -->
+                <div class="card">
+                    <h3>Advanced Quantum Settings</h3>
+                    <div style="margin-top: 1rem;">
+                        <div class="control">
+                            <label>Entanglement Depth</label>
+                            <div style="display: flex; align-items: center;">
+                                <input type="range" min="1" max="10" value="6" id="entanglement-depth" style="flex-grow: 1;">
+                                <span id="entanglement-value" style="margin-left: 0.5rem;">6</span>
+                            </div>
+                        </div>
+                        <div class="control" style="margin-top: 1rem;">
+                            <label>Decoherence Threshold</label>
+                            <div style="display: flex; align-items: center;">
+                                <input type="range" min="1" max="100" value="75" id="decoherence-threshold" style="flex-grow: 1;">
+                                <span id="decoherence-value" style="margin-left: 0.5rem;">75%</span>
+                            </div>
+                        </div>
+                        <div class="control" style="margin-top: 1rem;">
+                            <label>Quantum Noise Filter</label>
+                            <select id="noise-filter">
+                                <option value="adaptive">Adaptive Filter</option>
+                                <option value="kalman" selected>Kalman Quantum Filter</option>
+                                <option value="bayesian">Bayesian Quantum Filter</option>
+                                <option value="none">No Filter (Raw Data)</option>
+                            </select>
+                        </div>
+                        <button style="width: 100%; margin-top: 1rem;" id="apply-quantum-settings">Apply Settings</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
