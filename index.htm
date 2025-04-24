@@ -1,356 +1,1725 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QCS Stylock Market Predictor</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QCS Stylock Market Predictor - GitHub Pages Version</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+body {
+    background-color: #121212;
+    color: #ffffff;
+}
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #333;
+}
+.logo {
+    display: flex;
+    align-items: center;
+}
+.logo-text {
+    font-size: 24px;
+    font-weight: bold;
+    color: #9f7aea;
+}
+.tagline {
+    margin-left: 10px;
+    padding: 5px 10px;
+    background-color: #4b2160;
+    border-radius: 4px;
+    font-size: 12px;
+}
+.controls {
+    margin-bottom: 20px;
+    background-color: #1e1e1e;
+    padding: 15px;
+    border-radius: 8px;
+}
+.control-group {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+.control {
+    display: flex;
+    flex-direction: column;
+    min-width: 150px;
+}
+label {
+    font-size: 12px;
+    color: #a0a0a0;
+    margin-bottom: 5px;
+}
+select, button, input {
+    padding: 8px;
+    background-color: #2d2d2d;
+    border: 1px solid #444;
+    color: #fff;
+    border-radius: 4px;
+}
+button {
+    cursor: pointer;
+}
+button:hover {
+    background-color: #3d3d3d;
+}
+.button-group {
+    display: flex;
+    gap: 10px;
+}
+.active {
+    background-color: #3b82f6;
+}
+.dashboard {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    gap: 20px;
+}
+.card {
+    background-color: #1e1e1e;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+.stock-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+.chart-container {
+    height: 300px;
+    position: relative;
+}
+.volume-chart-container {
+    height: 150px;
+    position: relative;
+    margin-top: 15px;
+}
+.change-up {
+    color: #48bb78;
+}
+.change-down {
+    color: #f56565;
+}
+.watchlist {
+    max-height: 400px;
+    overflow-y: auto;
+}
+.watchlist-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px solid #333;
+    cursor: pointer;
+}
+.watchlist-item:hover {
+    background-color: #2d2d2d;
+}
+.watchlist-item.selected {
+    background-color: rgba(59, 130, 246, 0.2);
+    border-left: 3px solid #3b82f6;
+}
+.crypto {
+    background-color: rgba(247, 147, 26, 0.15);
+    border-left: 3px solid #f7931a;
+}
+.prediction-panel {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+.prediction-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #333;
+}
+.label {
+    color: #a0a0a0;
+}
+.data-update {
+    font-size: 12px;
+    color: #a0a0a0;
+    display: flex;
+    align-items: center;
+}
+.update-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #10b981;
+    margin-right: 5px;
+    animation: blink 1s infinite;
+}
+.market-banner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    margin-bottom: 20px;
+    background-color: #1e1e1e;
+    border-radius: 8px;
+}
+.market-closed {
+    border-left: 4px solid #b45309;
+}
+.market-open {
+    border-left: 4px solid #047857;
+}
+.market-closed h3 {
+    color: #ecc94b;
+}
+.market-open h3 {
+    color: #10b981;
+}
+.api-status {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-right: 10px;
+}
+.api-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+}
+.api-active {
+    background-color: #10b981;
+}
+.api-inactive {
+    background-color: #6b7280;
+}
+.quantum-grid {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 4px;
+    margin: 15px 0;
+}
+.quantum-node {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #3b82f6;
+    display: inline-block;
+    margin: 3px;
+    animation: pulse 2s infinite;
+}
+.coherence-info {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #333;
+}
+.coherence-meter {
+    width: 100%;
+    height: 8px;
+    background-color: #333;
+    border-radius: 4px;
+    margin: 0.5rem 0;
+    overflow: hidden;
+}
+.coherence-level {
+    height: 100%;
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+    border-radius: 4px;
+    transition: width 0.5s;
+}
+.setting-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+.setting-name {
+    color: #a0a0a0;
+}
+.setting-value {
+    font-weight: bold;
+}
+.startup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+.startup-dialog {
+    background-color: #1e1e1e;
+    padding: 30px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 500px;
+    text-align: center;
+}
+.startup-dialog h2 {
+    margin-bottom: 20px;
+    color: #9f7aea;
+}
+.startup-dialog p {
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+.startup-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+.startup-dialog button {
+    padding: 10px 20px;
+    min-width: 150px;
+}
+.primary-button {
+    background-color: #3b82f6;
+}
+@keyframes pulse {
+    0% { opacity: 0.3; }
+    50% { opacity: 1; }
+    100% { opacity: 0.3; }
+}
+@keyframes blink {
+    0% { opacity: 0.3; }
+    50% { opacity: 1; }
+    100% { opacity: 0.3; }
+}
+@media (max-width: 768px) {
+    .dashboard {
+        grid-template-columns: 1fr;
+    }
+    .control-group {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .prediction-panel {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
 </head>
 <body>
-    <!-- Startup Dialog -->
-    <div class="startup-overlay" id="startup-overlay">
-        <div class="startup-dialog">
-            <h2>QCS Stylock Market Predictor</h2>
-            <p>Welcome to the Quantum Coherence System for market prediction. This tool uses advanced quantum algorithms to analyze and predict market trends.</p>
-            <p>Choose how you would like to start:</p>
-            <div class="startup-buttons">
-                <button id="start-live" class="primary-button">Start with Live Data</button>
-                <button id="start-simulation">Start with Simulation</button>
+<!-- Startup Dialog -->
+<div class="startup-overlay" id="startup-overlay">
+    <div class="startup-dialog">
+        <h2>QCS Stylock Market Predictor</h2>
+        <p>Welcome to the Quantum Coherence System for market prediction. This tool uses advanced quantum algorithms to analyze and predict market trends.</p>
+        <p>Choose how you would like to start:</p>
+        <div class="startup-buttons">
+            <button id="start-live" class="primary-button">Start with Live Data</button>
+            <button id="start-simulation">Start with Simulation</button>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <header>
+        <div class="logo">
+            <div class="logo-text">QCS Stylock Market</div>
+            <div class="tagline">Powered by Quantum Coherence</div>
+        </div>
+        <div class="api-status">
+            <div class="api-indicator api-inactive" id="api-status"></div>
+            <span>API</span>
+        </div>
+        <div id="current-time"></div>
+        <div class="button-group">
+            <button id="toggle-mode">Live Market</button>
+            <button id="toggle-simulation" class="active">Simulation</button>
+        </div>
+    </header>
+    <!-- Market Banner -->
+    <div class="market-banner market-closed" id="market-banner">
+        <div>
+            <h3 id="market-status">Market Currently Closed</h3>
+            <p id="market-description">Regular trading hours are 9:30 AM - 4:00 PM ET, Monday-Friday.</p>
+        </div>
+        <div>
+            <div>Eastern Time: <span id="eastern-time">--:--:--</span></div>
+            <div>Local Time: <span id="local-time">--:--:--</span></div>
+        </div>
+    </div>
+    <div class="controls">
+        <div class="control-group">
+            <div class="control">
+                <label>Refresh Rate</label>
+                <select id="refresh-rate">
+                    <option value="5000">5 seconds</option>
+                    <option value="10000" selected>10 seconds</option>
+                    <option value="30000">30 seconds</option>
+                </select>
+            </div>
+            <div class="control">
+                <label>Prediction Horizon</label>
+                <select id="prediction-horizon">
+                    <option value="1d" selected>Day Trading (1 Day)</option>
+                    <option value="1w">Swing Trading (1 Week)</option>
+                    <option value="1m">Position Trading (1 Month)</option>
+                </select>
+            </div>
+            <div class="control">
+                <label>Coherence Protocol</label>
+                <select id="coherence-protocol">
+                    <option value="QCA-DFS-1" selected>QCA-DFS-1 (Decoherence-Free Subspace)</option>
+                    <option value="QCA-DEC-1">QCA-DEC-1 (Dynamical Decoupling)</option>
+                    <option value="QCA-TOP-1">QCA-TOP-1 (Topological Protection)</option>
+                    <option value="QCA-NMEE-1">QCA-NMEE-1 (Non-Markovian Environment)</option>
+                </select>
+            </div>
+            <div class="control" id="simulation-speed-control">
+                <label>Simulation Speed</label>
+                <div class="button-group">
+                    <button id="speed-down">-</button>
+                    <span id="speed-display" style="padding: 8px;">1x</span>
+                    <button id="speed-up">+</button>
+                </div>
             </div>
         </div>
     </div>
-
-    <div class="container">
-        <header>
-            <div class="logo">
-                <div class="logo-text">QCS Stylock Market</div>
-                <div class="tagline">Powered by Quantum Coherence</div>
-            </div>
-            <div class="api-status">
-                <div class="api-indicator api-inactive" id="api-status"></div>
-                <span>API</span>
-            </div>
-            <div id="current-time"></div>
-            <div class="button-group">
-                <button id="toggle-mode">Live Market</button>
-                <button id="toggle-simulation" class="active">Simulation</button>
-            </div>
-        </header>
-
-        <!-- Market Banner -->
-        <div class="market-banner market-closed" id="market-banner">
-            <div>
-                <h3 id="market-status">Market Currently Closed</h3>
-                <p id="market-description">Regular trading hours are 9:30 AM - 4:00 PM ET, Monday-Friday.</p>
-            </div>
-            <div>
-                <div>Eastern Time: <span id="eastern-time">--:--:--</span></div>
-                <div>Local Time: <span id="local-time">--:--:--</span></div>
-            </div>
-        </div>
-
-        <div class="controls">
-            <div class="control-group">
-                <div class="control">
-                    <label>Refresh Rate</label>
-                    <select id="refresh-rate">
-                        <option value="5000">5 seconds</option>
-                        <option value="10000" selected>10 seconds</option>
-                        <option value="30000">30 seconds</option>
-                    </select>
+    <div class="dashboard">
+        <div class="main-content">
+            <!-- Stock Header -->
+            <div class="card">
+                <div class="stock-header">
+                    <div>
+                        <h2 id="selected-ticker">AAPL</h2>
+                        <div class="data-update">
+                            <span class="update-indicator"></span>
+                            <span id="last-update">Last updated: Just now</span>
+                        </div>
+                    </div>
+                    <div>
+                        <span id="current-stock-price" style="font-size: 24px; font-weight: bold;">Loading...</span>
+                        <span id="current-stock-change" class="change-up">...</span>
+                    </div>
                 </div>
-                <div class="control">
-                    <label>Prediction Horizon</label>
-                    <select id="prediction-horizon">
-                        <option value="1d" selected>Day Trading (1 Day)</option>
-                        <option value="1w">Swing Trading (1 Week)</option>
-                        <option value="1m">Position Trading (1 Month)</option>
-                    </select>
+                <!-- Price Chart -->
+                <div class="chart-container">
+                    <canvas id="priceChart"></canvas>
                 </div>
-                <div class="control">
-                    <label>Coherence Protocol</label>
-                    <select id="coherence-protocol">
-                        <option value="QCA-DFS-1" selected>QCA-DFS-1 (Decoherence-Free Subspace)</option>
-                        <option value="QCA-DEC-1">QCA-DEC-1 (Dynamical Decoupling)</option>
-                        <option value="QCA-TOP-1">QCA-TOP-1 (Topological Protection)</option>
-                        <option value="QCA-NMEE-1">QCA-NMEE-1 (Non-Markovian Environment)</option>
-                    </select>
+                <!-- Volume Chart -->
+                <div class="volume-chart-container">
+                    <canvas id="volumeChart"></canvas>
                 </div>
-                <div class="control" id="simulation-speed-control">
-                    <label>Simulation Speed</label>
-                    <div class="button-group">
-                        <button id="speed-down">-</button>
-                        <span id="speed-display" style="padding: 8px;">1x</span>
-                        <button id="speed-up">+</button>
+            </div>
+            <!-- Prediction Panel -->
+            <div class="card">
+                <h3>QCS Prediction</h3>
+                <div class="prediction-panel">
+                    <div>
+                        <div class="prediction-item">
+                            <span class="label">Current Price:</span>
+                            <span id="prediction-current">Loading...</span>
+                        </div>
+                        <div class="prediction-item">
+                            <span class="label">Predicted Price:</span>
+                            <span id="prediction-price">Loading...</span>
+                        </div>
+                        <div class="prediction-item">
+                            <span class="label">Change:</span>
+                            <span id="prediction-change">Loading...</span>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="prediction-item">
+                            <span class="label">Confidence:</span>
+                            <span id="prediction-confidence">--.--%</span>
+                        </div>
+                        <div class="prediction-item">
+                            <span class="label">Support Level:</span>
+                            <span id="support-level">--</span>
+                        </div>
+                        <div class="prediction-item">
+                            <span class="label">Resistance Level:</span>
+                            <span id="resistance-level">--</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Quantum Visualization -->
+            <div class="card">
+                <h3>Quantum Coherence Visualization</h3>
+                <div class="quantum-grid" id="quantum-grid">
+                    <!-- Quantum nodes will be generated by JavaScript -->
+                </div>
+                <div class="coherence-info">
+                    <div class="setting-row">
+                        <span class="setting-name">Coherence Protocol:</span>
+                        <span class="setting-value" id="current-protocol">QCA-DFS-1</span>
+                    </div>
+                    <div class="setting-row">
+                        <span class="setting-name">System Coherence:</span>
+                        <span class="setting-value" id="system-coherence">--.--%</span>
+                    </div>
+                    <div class="coherence-meter">
+                        <div class="coherence-level" id="coherence-meter-level" style="width: 0%;"></div>
+                    </div>
+                    <div class="setting-row">
+                        <span class="setting-name">Quantum State:</span>
+                        <span class="setting-value" style="font-family: monospace;">|ψ⟩ = 0.707|00⟩ + 0.707e<sup>iπ/4</sup>|11⟩</span>
                     </div>
                 </div>
             </div>
         </div>
-
-        <div class="dashboard">
-            <div class="main-content">
-                <!-- Stock Header -->
-                <div class="card">
-                    <div class="stock-header">
+        <div class="sidebar">
+            <!-- Watchlist -->
+            <div class="card">
+                <h3>Watchlist</h3>
+                <div class="watchlist" id="watchlist">
+                    <!-- Original Stocks -->
+                    <div class="watchlist-item selected" data-symbol="AAPL">
+                        <div>AAPL</div>
                         <div>
-                            <h2 id="selected-ticker">AAPL</h2>
-                            <div class="data-update">
-                                <span class="update-indicator"></span>
-                                <span id="last-update">Last updated: Just now</span>
-                            </div>
+                            <span class="stock-price">Loading...</span>
+                            <span class="stock-change change-up">...</span>
                         </div>
+                    </div>
+                    <div class="watchlist-item" data-symbol="MSFT">
+                        <div>MSFT</div>
                         <div>
-                            <span id="current-stock-price" style="font-size: 24px; font-weight: bold;">Loading...</span>
-                            <span id="current-stock-change" class="change-up">...</span>
+                            <span class="stock-price">Loading...</span>
+                            <span class="stock-change change-up">...</span>
                         </div>
                     </div>
-                    <!-- Price Chart -->
-                    <div class="chart-container">
-                        <canvas id="priceChart"></canvas>
-                    </div>
-                    <!-- Volume Chart -->
-                    <div class="volume-chart-container">
-                        <canvas id="volumeChart"></canvas>
-                    </div>
-                </div>
-                
-                <!-- Prediction Panel -->
-                <div class="card">
-                    <h3>QCS Prediction</h3>
-                    <div class="prediction-panel">
+                    <div class="watchlist-item" data-symbol="GOOGL">
+                        <div>GOOGL</div>
                         <div>
-                            <div class="prediction-item">
-                                <span class="label">Current Price:</span>
-                                <span id="prediction-current">Loading...</span>
-                            </div>
-                            <div class="prediction-item">
-                                <span class="label">Predicted Price:</span>
-                                <span id="prediction-price">Loading...</span>
-                            </div>
-                            <div class="prediction-item">
-                                <span class="label">Change:</span>
-                                <span id="prediction-change">Loading...</span>
-                            </div>
+                            <span class="stock-price">Loading...</span>
+                            <span class="stock-change change-up">...</span>
                         </div>
+                    </div>
+                    <div class="watchlist-item" data-symbol="AMZN">
+                        <div>AMZN</div>
                         <div>
-                            <div class="prediction-item">
-                                <span class="label">Confidence:</span>
-                                <span id="prediction-confidence">--.--%</span>
-                            </div>
-                            <div class="prediction-item">
-                                <span class="label">Support Level:</span>
-                                <span id="support-level">--</span>
-                            </div>
-                            <div class="prediction-item">
-                                <span class="label">Resistance Level:</span>
-                                <span id="resistance-level">--</span>
-                            </div>
+                            <span class="stock-price">Loading...</span>
+                            <span class="stock-change change-up">...</span>
                         </div>
                     </div>
-                </div>
-                
-                <!-- Quantum Visualization -->
-                <div class="card">
-                    <h3>Quantum Coherence Visualization</h3>
-                    <div class="quantum-grid" id="quantum-grid">
-                        <!-- Quantum nodes will be generated by JavaScript -->
+                    <div class="watchlist-item" data-symbol="TSLA">
+                        <div>TSLA</div>
+                        <div>
+                            <span class="stock-price">Loading...</span>
+                            <span class="stock-change change-up">...</span>
+                        </div>
                     </div>
-                    <div class="coherence-info">
-                        <div class="setting-row">
-                            <span class="setting-name">Coherence Protocol:</span>
-                            <span class="setting-value" id="current-protocol">QCA-DFS-1</span>
+                    <div class="watchlist-item" data-symbol="NVDA">
+                        <div>NVDA</div>
+                        <div>
+                            <span class="stock-price">Loading...</span>
+                            <span class="stock-change change-up">...</span>
                         </div>
-                        <div class="setting-row">
-                            <span class="setting-name">System Coherence:</span>
-                            <span class="setting-value" id="system-coherence">--.--%</span>
+                    </div>
+                    <div class="watchlist-item" data-symbol="META">
+                        <div>META</div>
+                        <div>
+                            <span class="stock-price">Loading...</span>
+                            <span class="stock-change change-up">...</span>
                         </div>
-                        <div class="coherence-meter">
-                            <div class="coherence-level" id="coherence-meter-level" style="width: 0%;"></div>
+                    </div>
+                    
+                    <!-- New added stocks -->
+                    <div class="watchlist-item" data-symbol="NKLA">
+                        <div>NKLA</div>
+                        <div>
+                            <span class="stock-price">Loading...</span>
+                            <span class="stock-change change-up">...</span>
                         </div>
-                        <div class="setting-row">
-                            <span class="setting-name">Quantum State:</span>
-                            <span class="setting-value" style="font-family: monospace;">|ψ⟩ = 0.707|00⟩ + 0.707e<sup>iπ/4</sup>|11⟩</span>
+                    </div>
+                    <div class="watchlist-item" data-symbol="ABVE">
+                        <div>ABVE</div>
+                        <div>
+                            <span class="stock-price">Loading...</span>
+                            <span class="stock-change change-up">...</span>
+                        </div>
+                    </div>
+                    <div class="watchlist-item" data-symbol="CNTM">
+                        <div>CNTM</div>
+                        <div>
+                            <span class="stock-price">Loading...</span>
+                            <span class="stock-change change-up">...</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Additional NASDAQ stocks -->
+                    <div class="watchlist-item" data-symbol="INTC">
+                        <div>INTC</div>
+                        <div>
+                            <span class="stock-price">Loading...</span>
+                            <span class="stock-change change-up">...</span>
+                        </div>
+                    </div>
+                    <div class="watchlist-item" data-symbol="AMD">
+                        <div>AMD</div>
+                        <div>
+                            <span class="stock-price">Loading...</span>
+                            <span class="stock-change change-up">...</span>
+                        </div>
+                    </div>
+                    <div class="watchlist-item" data-symbol="PYPL">
+                        <div>PYPL</div>
+                        <div>
+                            <span class="stock-price">Loading...</span>
+                            <span class="stock-change change-up">...</span>
+                        </div>
+                    </div>
+                    <div class="watchlist-item" data-symbol="ADBE">
+                        <div>ADBE</div>
+                        <div>
+                            <span class="stock-price">Loading...</span>
+                            <span class="stock-change change-up">...</span>
+                        </div>
+                    </div>
+                    <div class="watchlist-item" data-symbol="NFLX">
+                        <div>NFLX</div>
+                        <div>
+                            <span class="stock-price">Loading...</span>
+                            <span class="stock-change change-up">...</span>
+                        </div>
+                    </div>
+                    <div class="watchlist-item" data-symbol="CSCO">
+                        <div>CSCO</div>
+                        <div>
+                            <span class="stock-price">Loading...</span>
+                            <span class="stock-change change-up">...</span>
+                        </div>
+                    </div>
+                    <div class="watchlist-item" data-symbol="QCOM">
+                        <div>QCOM</div>
+                        <div>
+                            <span class="stock-price">Loading...</span>
+                            <span class="stock-change change-up">...</span>
+                        </div>
+                    </div>
+                    <div class="watchlist-item" data-symbol="AVGO">
+                        <div>AVGO</div>
+                        <div>
+                            <span class="stock-price">Loading...</span>
+                            <span class="stock-change change-up">...</span>
+                        </div>
+                    </div>
+                    <div class="watchlist-item" data-symbol="CMCSA">
+                        <div>CMCSA</div>
+                        <div>
+                            <span class="stock-price">Loading...</span>
+                            <span class="stock-change change-up">...</span>
+                        </div>
+                    </div>
+                    <div class="watchlist-item" data-symbol="PEP">
+                        <div>PEP</div>
+                        <div>
+                            <span class="stock-price">Loading...</span>
+                            <span class="stock-change change-up">...</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Cryptocurrencies -->
+                    <div class="watchlist-item crypto" data-symbol="BTC-USD">
+                        <div>BTC-USD</div>
+                        <div>
+                            <span class="stock-price">Loading...</span>
+                            <span class="stock-change change-up">...</span>
+                        </div>
+                    </div>
+                    <div class="watchlist-item crypto" data-symbol="ETH-USD">
+                        <div>ETH-USD</div>
+                        <div>
+                            <span class="stock-price">Loading...</span>
+                            <span class="stock-change change-up">...</span>
+                        </div>
+                    </div>
+                    <div class="watchlist-item crypto" data-symbol="SOL-USD">
+                        <div>SOL-USD</div>
+                        <div>
+                            <span class="stock-price">Loading...</span>
+                            <span class="stock-change change-up">...</span>
+                        </div>
+                    </div>
+                    <div class="watchlist-item crypto" data-symbol="ADA-USD">
+                        <div>ADA-USD</div>
+                        <div>
+                            <span class="stock-price">Loading...</span>
+                            <span class="stock-change change-up">...</span>
+                        </div>
+                    </div>
+                    <div class="watchlist-item crypto" data-symbol="XRP-USD">
+                        <div>XRP-USD</div>
+                        <div>
+                            <span class="stock-price">Loading...</span>
+                            <span class="stock-change change-up">...</span>
                         </div>
                     </div>
                 </div>
             </div>
+            <!-- Quantum Settings Card -->
+            <div class="card">
+                <h3>Advanced Quantum Settings</h3>
+                <div style="margin-top: 1rem;">
+                    <div class="control">
+                        <label>Entanglement Depth</label>
+                        <div style="display: flex; align-items: center;">
+                            <input type="range" min="1" max="10" value="6" id="entanglement-depth" style="flex-grow: 1;">
+                            <span id="entanglement-value" style="margin-left: 0.5rem;">6</span>
+                        </div>
+                    </div>
+                    <div class="control" style="margin-top: 1rem;">
+                        <label>Decoherence Threshold</label>
+                        <div style="display: flex; align-items: center;">
+                            <input type="range" min="1" max="100" value="75" id="decoherence-threshold" style="flex-grow: 1;">
+                            <span id="decoherence-value" style="margin-left: 0.5rem;">75%</span>
+                        </div>
+                    </div>
+                    <div class="control" style="margin-top: 1rem;">
+                        <label>Quantum Noise Filter</label>
+                        <select id="noise-filter">
+                            <option value="adaptive">Adaptive Filter</option>
+                            <option value="kalman" selected>Kalman Quantum Filter</option>
+                            <option value="bayesian">Bayesian Quantum Filter</option>
+                            <option value="none">No Filter (Raw Data)</option>
+                        </select>
+                    </div>
+                    <button style="width: 100%; margin-top: 1rem;" id="apply-quantum-settings">Apply Settings</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+// Stock data repository with pre-populated values (for simulation mode)
+const stockData = {
+    // Original stocks
+    'AAPL': { price: 187.50, volatility: 0.8, change: 1.2, changePercent: 0.65, history: [], volume: [], prevClose: 185.26 },
+    'MSFT': { price: 384.22, volatility: 0.7, change: 3.05, changePercent: 0.8, history: [], volume: [], prevClose: 381.17 },
+    'GOOGL': { price: 141.70, volatility: 0.9, change: -0.43, changePercent: -0.3, history: [], volume: [], prevClose: 142.13 },
+    'AMZN': { price: 178.35, volatility: 1.1, change: 2.64, changePercent: 1.5, history: [], volume: [], prevClose: 175.71 },
+    'TSLA': { price: 248.42, volatility: 1.8, change: -5.25, changePercent: -2.1, history: [], volume: [], prevClose: 253.67 },
+    'NVDA': { price: 875.28, volatility: 1.5, change: 19.73, changePercent: 2.3, history: [], volume: [], prevClose: 855.55 },
+    'META': { price: 478.22, volatility: 1.0, change: 4.41, changePercent: 0.9, history: [], volume: [], prevClose: 473.81 },
+    'NKLA': { price: 9.75, volatility: 2.3, change: 0.32, changePercent: 3.4, history: [], volume: [], prevClose: 9.43 },
+    'ABVE': { price: 42.18, volatility: 1.2, change: -0.85, changePercent: -1.98, history: [], volume: [], prevClose: 43.03 },
+    'CNTM': { price: 154.63, volatility: 1.7, change: 3.27, changePercent: 2.16, history: [], volume: [], prevClose: 151.36 },
+    
+    // Additional popular NASDAQ stocks
+    'INTC': { price: 34.82, volatility: 1.3, change: 0.57, changePercent: 1.66, history: [], volume: [], prevClose: 34.25 },
+    'AMD': { price: 156.40, volatility: 2.0, change: 3.25, changePercent: 2.12, history: [], volume: [], prevClose: 153.15 },
+    'PYPL': { price: 62.78, volatility: 1.4, change: -0.87, changePercent: -1.37, history: [], volume: [], prevClose: 63.65 },
+    'ADBE': { price: 504.60, volatility: 1.1, change: 8.74, changePercent: 1.76, history: [], volume: [], prevClose: 495.86 },
+    'NFLX': { price: 628.55, volatility: 1.6, change: 12.36, changePercent: 2.01, history: [], volume: [], prevClose: 616.19 },
+    'CSCO': { price: 48.95, volatility: 0.7, change: 0.23, changePercent: 0.47, history: [], volume: [], prevClose: 48.72 },
+    'QCOM': { price: 170.28, volatility: 1.3, change: 2.45, changePercent: 1.46, history: [], volume: [], prevClose: 167.83 },
+    'AVGO': { price: 1425.75, volatility: 1.2, change: 25.64, changePercent: 1.83, history: [], volume: [], prevClose: 1400.11 },
+    'CMCSA': { price: 39.45, volatility: 0.8, change: -0.32, changePercent: -0.81, history: [], volume: [], prevClose: 39.77 },
+    'PEP': { price: 172.68, volatility: 0.6, change: 1.12, changePercent: 0.65, history: [], volume: [], prevClose: 171.56 },
+    
+    // Cryptocurrencies
+    'BTC-USD': { price: 65340.28, volatility: 2.4, change: -793.22, changePercent: -1.2, history: [], volume: [], prevClose: 66133.50 },
+    'ETH-USD': { price: 3467.92, volatility: 2.1, change: 58.21, changePercent: 1.7, history: [], volume: [], prevClose: 3409.71 },
+    'SOL-USD': { price: 142.35, volatility: 3.2, change: 5.24, changePercent: 3.82, history: [], volume: [], prevClose: 137.11 },
+    'ADA-USD': { price: 0.45, volatility: 2.8, change: -0.02, changePercent: -4.26, history: [], volume: [], prevClose: 0.47 },
+    'XRP-USD': { price: 0.52, volatility: 2.6, change: 0.01, changePercent: 1.96, history: [], volume: [], prevClose: 0.51 }
+};
+
+// Global variables
+let selectedStock = 'AAPL';
+let priceChart, volumeChart;
+let timeLabels = [];
+let simulationMode = true;
+let simulationSpeed = 1;
+let updateInterval;
+let updateSpeed = 10000; // 10 seconds
+let apiActive = false;
+let marketOpen = false;
+
+// API Key for Alpha Vantage (free tier)
+// Replace with your own API key from https://www.alphavantage.co/
+const API_KEY = 'Y8XOMTVP10GR0V7Y'; // Demo key with limited requests
+
+// Quantum coherence variables
+let coherenceLevel = 85;
+let entanglementDepth = 6;
+let decoherenceThreshold = 75;
+
+// --- API FUNCTIONS ---
+// Check if API is active
+function updateApiStatus(active) {
+    apiActive = active;
+    const indicator = document.getElementById('api-status');
+    indicator.className = active ? 'api-indicator api-active' : 'api-indicator api-inactive';
+}
+
+// Fetch real-time stock data
+async function fetchRealTimeData(symbol) {
+    try {
+        // Use Alpha Vantage API for real-time quotes
+        const url = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${API_KEY}`;
+        
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`API error: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        // Check if we got valid data
+        if (!data || !data['Global Quote'] || Object.keys(data['Global Quote']).length === 0) {
+            throw new Error('Invalid data received from API');
+        }
+        
+        const quote = data['Global Quote'];
+        
+        // Format the data for our application
+        const price = parseFloat(quote['05. price']);
+        const previousClose = parseFloat(quote['08. previous close']);
+        const changeAmount = parseFloat(quote['09. change']);
+        const changePercent = parseFloat(quote['10. change percent'].replace('%', ''));
+        const volume = parseInt(quote['06. volume']);
+        
+        console.log(`Fetched market data for ${symbol}: $${price.toFixed(2)} (${changePercent.toFixed(2)}%)`);
+        updateApiStatus(true);
+        
+        return {
+            symbol,
+            price: price.toFixed(2),
+            prevClose: previousClose.toFixed(2),
+            change: changeAmount.toFixed(2),
+            changePercent: changePercent.toFixed(2),
+            volume: volume,
+            timestamp: Date.now()
+        };
+    } catch (error) {
+        console.error(`Error fetching market data for ${symbol}:`, error);
+        updateApiStatus(false);
+        return null;
+    }
+}
+
+// Fetch historical data
+async function fetchHistoricalData(symbol) {
+    try {
+        // Use Alpha Vantage API for historical intraday data
+        const url = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${symbol}&interval=5min&apikey=${API_KEY}`;
+        
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`Historical API error: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        // Check if we got valid data
+        const timeSeriesKey = 'Time Series (5min)';
+        if (!data || !data[timeSeriesKey] || Object.keys(data[timeSeriesKey]).length === 0) {
+            throw new Error('Invalid historical data received');
+        }
+        
+        const timeSeries = data[timeSeriesKey];
+        const timestamps = Object.keys(timeSeries).sort((a, b) => new Date(a) - new Date(b));
+        
+        // Format the data for our charts
+        const prices = [];
+        const volumes = [];
+        const times = [];
+        
+        // Process the entries (up to 60 entries for our chart)
+        const maxEntries = Math.min(60, timestamps.length);
+        for (let i = 0; i < maxEntries; i++) {
+            const timestamp = timestamps[i];
+            const entry = timeSeries[timestamp];
             
-            <div class="sidebar">
-                <!-- Watchlist -->
-                <div class="card">
-                    <h3>Watchlist</h3>
-                    <div class="watchlist" id="watchlist">
-                        <div class="watchlist-item selected" data-symbol="AAPL">
-                            <div>AAPL</div>
-                            <div>
-                                <span class="stock-price">Loading...</span>
-                                <span class="stock-change change-up">...</span>
-                            </div>
-                        </div>
-                        <div class="watchlist-item" data-symbol="MSFT">
-                            <div>MSFT</div>
-                            <div>
-                                <span class="stock-price">Loading...</span>
-                                <span class="stock-change change-up">...</span>
-                            </div>
-                        </div>
-                        <div class="watchlist-item" data-symbol="GOOGL">
-                            <div>GOOGL</div>
-                            <div>
-                                <span class="stock-price">Loading...</span>
-                                <span class="stock-change change-up">...</span>
-                            </div>
-                        </div>
-                        <div class="watchlist-item" data-symbol="AMZN">
-                            <div>AMZN</div>
-                            <div>
-                                <span class="stock-price">Loading...</span>
-                                <span class="stock-change change-up">...</span>
-                            </div>
-                        </div>
-                        <div class="watchlist-item" data-symbol="TSLA">
-                            <div>TSLA</div>
-                            <div>
-                                <span class="stock-price">Loading...</span>
-                                <span class="stock-change change-up">...</span>
-                            </div>
-                        </div>
-                        <div class="watchlist-item" data-symbol="NVDA">
-                            <div>NVDA</div>
-                            <div>
-                                <span class="stock-price">Loading...</span>
-                                <span class="stock-change change-up">...</span>
-                            </div>
-                        </div>
-                        <div class="watchlist-item" data-symbol="META">
-                            <div>META</div>
-                            <div>
-                                <span class="stock-price">Loading...</span>
-                                <span class="stock-change change-up">...</span>
-                            </div>
-                        </div>
-                        <!-- New added stocks -->
-                        <div class="watchlist-item" data-symbol="NFLX">
-                            <div>NFLX</div>
-                            <div>
-                                <span class="stock-price">Loading...</span>
-                                <span class="stock-change change-up">...</span>
-                            </div>
-                        </div>
-                        <div class="watchlist-item" data-symbol="ADBE">
-                            <div>ADBE</div>
-                            <div>
-                                <span class="stock-price">Loading...</span>
-                                <span class="stock-change change-up">...</span>
-                            </div>
-                        </div>
-                        <div class="watchlist-item" data-symbol="PYPL">
-                            <div>PYPL</div>
-                            <div>
-                                <span class="stock-price">Loading...</span>
-                                <span class="stock-change change-up">...</span>
-                            </div>
-                        </div>
-                        <div class="watchlist-item" data-symbol="INTC">
-                            <div>INTC</div>
-                            <div>
-                                <span class="stock-price">Loading...</span>
-                                <span class="stock-change change-up">...</span>
-                            </div>
-                        </div>
-                        <div class="watchlist-item" data-symbol="CSCO">
-                            <div>CSCO</div>
-                            <div>
-                                <span class="stock-price">Loading...</span>
-                                <span class="stock-change change-up">...</span>
-                            </div>
-                        </div>
-                        <div class="watchlist-item" data-symbol="CMCSA">
-                            <div>CMCSA</div>
-                            <div>
-                                <span class="stock-price">Loading...</span>
-                                <span class="stock-change change-up">...</span>
-                            </div>
-                        </div>
-                        <div class="watchlist-item" data-symbol="PEP">
-                            <div>PEP</div>
-                            <div>
-                                <span class="stock-price">Loading...</span>
-                                <span class="stock-change change-up">...</span>
-                            </div>
-                        </div>
-                        <div class="watchlist-item" data-symbol="NKLA">
-                            <div>NKLA</div>
-                            <div>
-                                <span class="stock-price">Loading...</span>
-                                <span class="stock-change change-up">...</span>
-                            </div>
-                        </div>
-                        <div class="watchlist-item" data-symbol="ABVE">
-                            <div>ABVE</div>
-                            <div>
-                                <span class="stock-price">Loading...</span>
-                                <span class="stock-change change-up">...</span>
-                            </div>
-                        </div>
-                        <div class="watchlist-item" data-symbol="CNTM">
-                            <div>CNTM</div>
-                            <div>
-                                <span class="stock-price">Loading...</span>
-                                <span class="stock-change change-up">...</span>
-                            </div>
-                        </div>
-                        <div class="watchlist-item crypto" data-symbol="BTC-USD">
-                            <div>BTC-USD</div>
-                            <div>
-                                <span class="stock-price">Loading...</span>
-                                <span class="stock-change change-up">...</span>
-                            </div>
-                        </div>
-                        <div class="watchlist-item crypto" data-symbol="ETH-USD">
-                            <div>ETH-USD</div>
-                            <div>
-                                <span class="stock-price">Loading...</span>
-                                <span class="stock-change change-up">...</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Quantum Settings Card -->
-                <div class="card">
-                    <h3>Advanced Quantum Settings</h3>
-                    <div style="margin-top: 1rem;">
-                        <div class="control">
-                            <label>Entanglement Depth</label>
-                            <div style="display: flex; align-items: center;">
-                                <input type="range" min="1" max="10" value="6" id="entanglement-depth" style="flex-grow: 1;">
-                                <span id="entanglement-value" style="margin-left: 0.5rem;">6</span>
-                            </div>
-                        </div>
-                        <div class="control" style="margin-top: 1rem;">
-                            <label>Decoherence Threshold</label>
-                            <div style="display: flex; align-items: center;">
-                                <input type="range" min="1" max="100" value="75" id="decoherence-threshold" style="flex-grow: 1;">
-                                <span id="decoherence-value" style="margin-left: 0.5rem;">75%</span>
-                            </div>
-                        </div>
-                        <div class="control" style="margin-top: 1rem;">
-                            <label>Quantum Noise Filter</label>
-                            <select id="noise-filter">
-                                <option value="adaptive">Adaptive Filter</option>
-                                <option value="kalman" selected>Kalman Quantum Filter</option>
-                                <option value="bayesian">Bayesian Quantum Filter</option>
-                                <option value="none">No Filter (Raw Data)</option>
-                            </select>
-                        </div>
-                        <button style="width: 100%; margin-top: 1rem;" id="apply-quantum-settings">Apply Settings</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <script src="script.js"></script>
-</body>
-</html>
+            prices.push(parseFloat(entry['4. close']).toFixed(2));
+            volumes.push(parseInt(entry['5. volume']));
+            
+            // Format time for display
+            const date = new Date(timestamp);
+            times.push(date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}));
+        }
+        
+        updateApiStatus(true);
+        
+        return {
+            prices,
+            volumes,
+            times
+        };
+    } catch (error) {
+        console.error(`Error fetching historical data for ${symbol}:`, error);
+        updateApiStatus(false);
+        return null;
+    }
+}
+
+// Update with real-time data
+async function updateWithRealData() {
+    try {
+        // Fetch real-time data for selected stock
+        const stockResult = await fetchRealTimeData(selectedStock);
+        
+        if (stockResult) {
+            // Update the stockData object
+            stockData[selectedStock].price = stockResult.price;
+            stockData[selectedStock].change = stockResult.change;
+            stockData[selectedStock].changePercent = stockResult.changePercent;
+            stockData[selectedStock].prevClose = stockResult.prevClose;
+            
+            // Fetch historical data
+            const historyResult = await fetchHistoricalData(selectedStock);
+            if (historyResult) {
+                stockData[selectedStock].history = historyResult.prices;
+                stockData[selectedStock].volume = historyResult.volumes;
+                timeLabels = historyResult.times;
+            } else {
+                // If no history data, generate simulation data
+                generateSimulatedHistory(selectedStock);
+            }
+            
+            // Update UI
+            updateSelectedStockDisplay();
+            updateCharts();
+        } else {
+            // Fall back to simulation if API fails
+            generateSimulatedHistory(selectedStock);
+            updateSimulatedPrice(selectedStock);
+            updateSelectedStockDisplay();
+            updateCharts();
+        }
+        
+        // Update other stocks in background
+        updateWatchlistInBackground();
+    } catch (error) {
+        console.error('Error in real-time update:', error);
+        // Fall back to simulation
+        generateSimulatedHistory(selectedStock);
+        updateSimulatedPrice(selectedStock);
+        updateSelectedStockDisplay();
+        updateCharts();
+    }
+}
+
+// Update watchlist with background API calls
+async function updateWatchlistInBackground() {
+    // Get all symbols except selected
+    const symbols = Object.keys(stockData).filter(s => s !== selectedStock);
+    
+    // Update one stock at a time to avoid API rate limits
+    for (const symbol of symbols) {
+        try {
+            // Wait between calls to avoid rate limiting
+            await new Promise(resolve => setTimeout(resolve, 5000));
+            
+            const result = await fetchRealTimeData(symbol);
+            if (result) {
+                // Update the stockData object
+                stockData[symbol].price = result.price;
+                stockData[symbol].change = result.change;
+                stockData[symbol].changePercent = result.changePercent;
+                stockData[symbol].prevClose = result.prevClose;
+            }
+        } catch (error) {
+            console.error(`Error updating ${symbol}:`, error);
+        }
+    }
+    
+    // Update watchlist display
+    updateWatchlistDisplay();
+}
+
+// --- SIMULATION FUNCTIONS ---
+// Generate time labels (60 minute intervals)
+function generateTimeLabels() {
+    const labels = [];
+    const now = new Date();
+    for (let i = 59; i >= 0; i--) {
+        const time = new Date(now.getTime() - i * 60000);
+        labels.push(time.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}));
+    }
+    return labels;
+}
+
+// Generate historical data for simulation
+function generateSimulatedHistory(symbol) {
+    if (!stockData[symbol]) return;
+    
+    const data = stockData[symbol];
+    const currentPrice = parseFloat(data.price);
+    const volatility = data.volatility || 0.8;
+    
+    // Clear existing data
+    data.history = [];
+    data.volume = [];
+    
+    // Create 60 historical data points with some randomness
+    let lastPrice = currentPrice;
+    for (let i = 0; i < 60; i++) {
+        // More volatility as we go back in time
+        const timeVolatility = volatility * (1 + i/120);
+        const changePercent = (Math.random() - 0.48) * timeVolatility;
+        const newPrice = lastPrice * (1 - changePercent/100);
+        
+        data.history.unshift(newPrice.toFixed(2));
+        lastPrice = newPrice;
+        
+        // Generate historical volume with some randomness
+        const baseVolume = 500000 + Math.random() * 1000000;
+        const volumeChange = (Math.random() - 0.5) * 0.3; // +/- 30%
+        data.volume.unshift(Math.floor(baseVolume * (1 + volumeChange)));
+    }
+}
+
+// Update simulated price
+function updateSimulatedPrice(symbol) {
+    if (!stockData[symbol]) return;
+    
+    const data = stockData[symbol];
+    const currentPrice = parseFloat(data.price);
+    const volatility = data.volatility || 0.8;
+    
+    // Generate random price movement
+    const changePercent = (Math.random() - 0.48) * volatility;
+    const newPrice = currentPrice * (1 + changePercent / 100);
+    
+    // Update the object
+    stockData[symbol].price = newPrice.toFixed(2);
+    
+    // Calculate daily change (from previous close)
+    const startPrice = parseFloat(data.prevClose);
+    const priceChange = newPrice - startPrice;
+    const percentChange = (priceChange / startPrice * 100);
+    
+    stockData[symbol].change = priceChange.toFixed(2);
+    stockData[symbol].changePercent = percentChange.toFixed(2);
+    
+    // If this is the selected stock, shift history and add new data
+    if (symbol === selectedStock && data.history && data.history.length >= 60) {
+        data.history.shift();
+        data.history.push(newPrice.toFixed(2));
+        
+        // Add new volume data
+        if (data.volume && data.volume.length >= 60) {
+            const baseVolume = data.volume[data.volume.length - 1];
+            const volumeChange = (Math.random() - 0.5) * 0.2; // +/- 20%
+            const newVolume = Math.floor(baseVolume * (1 + volumeChange));
+            
+            data.volume.shift();
+            data.volume.push(newVolume);
+        }
+        
+        // Shift time labels
+        if (timeLabels && timeLabels.length >= 60) {
+            const now = new Date();
+            timeLabels.shift();
+            timeLabels.push(now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}));
+        }
+    }
+}
+
+// --- QUANTUM ALGORITHMS ---
+// Update quantum visualization
+function updateQuantumVisualization() {
+    const grid = document.getElementById('quantum-grid');
+    grid.innerHTML = ''; // Clear existing nodes
+    
+    // Get current coherence protocol
+    const protocol = document.getElementById('coherence-protocol').value;
+    
+    // Update display values
+    document.getElementById('current-protocol').textContent = protocol;
+    document.getElementById('system-coherence').textContent = coherenceLevel.toFixed(1) + '%';
+    document.getElementById('coherence-meter-level').style.width = coherenceLevel + '%';
+    
+    // Create quantum nodes based on entanglement depth
+    const nodeCount = entanglementDepth * 10; // 10 nodes per level
+    for (let i = 0; i < nodeCount; i++) {
+        const node = document.createElement('div');
+        node.className = 'quantum-node';
+        node.style.animationDelay = `${Math.random() * 2}s`;
+        
+        // Some nodes appear decoherent based on threshold
+        const randomValue = Math.random() * 100;
+        if (randomValue > decoherenceThreshold) {
+            node.style.opacity = '0.3'; // Decoherent node
+        }
+        
+        grid.appendChild(node);
+    }
+}
+
+// Quantum prediction algorithm
+function quantumPredict(data) {
+    const currentPrice = parseFloat(data.price);
+    const changePercent = parseFloat(data.changePercent);
+    const volatility = data.volatility || 0.8;
+    
+    // Adjust coherence based on protocol
+    let protocolFactor = 1.0;
+    const protocol = document.getElementById('coherence-protocol').value;
+    switch(protocol) {
+        case 'QCA-DFS-1':
+            protocolFactor = 1.0;
+            break;
+        case 'QCA-DEC-1':
+            protocolFactor = 1.05;
+            break;
+        case 'QCA-TOP-1':
+            protocolFactor = 1.1;
+            break;
+        case 'QCA-NMEE-1':
+            protocolFactor = 1.15;
+            break;
+    }
+    
+    // Calculate coherence influence
+    const coherenceInfluence = (coherenceLevel / 100) * protocolFactor;
+    
+    // Base prediction calculation based on trend direction
+    let predictedChangePercent;
+    if (changePercent >= 0) {
+        // For positive trending stocks, predict continued growth with quantum adjustment
+        predictedChangePercent = (0.8 + Math.random() * 0.7) * coherenceInfluence;
+    } else {
+        // For negative trending stocks, predict recovery or continued decline
+        predictedChangePercent = ((Math.random() * 1.5) - 0.7) * coherenceInfluence;
+    }
+    
+    // Apply entanglement factor
+    const entanglementFactor = entanglementDepth / 5; // Normalize to reasonable range
+    predictedChangePercent *= entanglementFactor;
+    
+    // Noise reduction based on selected filter
+    const noiseFilter = document.getElementById('noise-filter').value;
+    let noiseFactor = 1.0;
+    switch(noiseFilter) {
+        case 'adaptive':
+            noiseFactor = 0.85;
+            break;
+        case 'kalman':
+            noiseFactor = 0.7;
+            break;
+        case 'bayesian':
+            noiseFactor = 0.8;
+            break;
+        case 'none':
+            noiseFactor = 1.0;
+            break;
+    }
+    
+    // Apply noise factor to volatility
+    const adjustedVolatility = volatility * noiseFactor;
+    
+    // Calculate predicted price
+    const predictedPrice = currentPrice * (1 + (predictedChangePercent / 100));
+    
+    // Calculate confidence level based on coherence and volatility
+    const confidenceLevel = Math.min(98, Math.max(60, coherenceLevel - (adjustedVolatility * 10)));
+    
+    // Calculate support and resistance levels
+    const supportLevel = currentPrice * (1 - adjustedVolatility/20);
+    const resistanceLevel = currentPrice * (1 + adjustedVolatility/15);
+    
+    return {
+        price: predictedPrice.toFixed(2),
+        change: (predictedPrice - currentPrice).toFixed(2),
+        changePercent: predictedChangePercent.toFixed(2),
+        confidence: confidenceLevel.toFixed(1),
+        support: supportLevel.toFixed(2),
+        resistance: resistanceLevel.toFixed(2)
+    };
+}
+
+// --- CHART FUNCTIONS ---
+// Create charts
+function createCharts() {
+    // Price chart
+    const priceCtx = document.getElementById('priceChart').getContext('2d');
+    priceChart = new Chart(priceCtx, {
+        type: 'line',
+        data: {
+            labels: timeLabels,
+            datasets: [{
+                label: 'Price',
+                data: stockData[selectedStock].history,
+                borderColor: '#63b3ed',
+                backgroundColor: 'rgba(99, 179, 237, 0.1)',
+                borderWidth: 2,
+                pointRadius: 0,
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                    callbacks: {
+                        label: function(context) {
+                            return `$${context.raw}`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    },
+                    ticks: {
+                        color: '#a0a0a0',
+                        maxRotation: 0,
+                        autoSkip: true,
+                        maxTicksLimit: 6
+                    }
+                },
+                y: {
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    },
+                    ticks: {
+                        color: '#a0a0a0',
+                        callback: function(value) {
+                            return '$' + value;
+                        }
+                    }
+                }
+            },
+            animation: {
+                duration: 500
+            }
+        }
+    });
+    
+    // Volume chart
+    const volumeCtx = document.getElementById('volumeChart').getContext('2d');
+    volumeChart = new Chart(volumeCtx, {
+        type: 'bar',
+        data: {
+            labels: timeLabels,
+            datasets: [{
+                label: 'Volume',
+                data: stockData[selectedStock].volume,
+                backgroundColor: '#82ca9d',
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false
+                }
+            },
+            scales: {
+                x: {
+                    display: false
+                },
+                y: {
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    },
+                    ticks: {
+                        color: '#a0a0a0'
+                    }
+                }
+            },
+            animation: {
+                duration: 500
+            }
+        }
+    });
+}
+
+// Update charts
+function updateCharts() {
+    if (!priceChart || !volumeChart) return;
+    
+    // Update data
+    priceChart.data.labels = timeLabels;
+    priceChart.data.datasets[0].data = stockData[selectedStock].history;
+    volumeChart.data.labels = timeLabels;
+    volumeChart.data.datasets[0].data = stockData[selectedStock].volume;
+    
+    // Update charts
+    priceChart.update();
+    volumeChart.update();
+}
+
+// --- UI UPDATE FUNCTIONS ---
+// Update watchlist display
+function updateWatchlistDisplay() {
+    Object.keys(stockData).forEach(symbol => {
+        const data = stockData[symbol];
+        const watchlistItem = document.querySelector(`.watchlist-item[data-symbol="${symbol}"]`);
+        
+        if (watchlistItem) {
+            const price = parseFloat(data.price);
+            const priceElement = watchlistItem.querySelector('.stock-price');
+            priceElement.textContent = '$' + price.toFixed(2);
+            
+            const changeElement = watchlistItem.querySelector('.stock-change');
+            const changePercent = parseFloat(data.changePercent);
+            const changeDisplay = (changePercent >= 0 ? '+' : '') + changePercent + '%';
+            changeElement.textContent = changeDisplay;
+            
+            // Set color based on direction
+            if (changePercent >= 0) {
+                changeElement.className = 'stock-change change-up';
+            } else {
+                changeElement.className = 'stock-change change-down';
+            }
+        }
+    });
+}
+
+// Update selected stock display
+function updateSelectedStockDisplay() {
+    const data = stockData[selectedStock];
+    if (!data) return;
+    
+    const currentPrice = parseFloat(data.price);
+    
+    // Update header display
+    document.getElementById('selected-ticker').textContent = selectedStock;
+    document.getElementById('current-stock-price').textContent = '$' + currentPrice.toFixed(2);
+    
+    const changeAmount = parseFloat(data.change);
+    const changePercent = parseFloat(data.changePercent);
+    
+    const changeDisplay = `${changeAmount >= 0 ? '+$' : '-$'}${Math.abs(changeAmount).toFixed(2)} (${changePercent >= 0 ? '+' : ''}${changePercent}%)`;
+    document.getElementById('current-stock-change').textContent = changeDisplay;
+    document.getElementById('current-stock-change').className = changePercent >= 0 ? 'change-up' : 'change-down';
+    
+    // Update prediction panel with quantum algorithm
+    document.getElementById('prediction-current').textContent = '$' + currentPrice.toFixed(2);
+    
+    // Get quantum prediction
+    const prediction = quantumPredict(data);
+    
+    document.getElementById('prediction-price').textContent = '$' + prediction.price;
+    
+    // Display predicted change
+    const predChangeAmount = parseFloat(prediction.change);
+    const predChangePercent = parseFloat(prediction.changePercent);
+    
+    const predChangeDisplay = `${predChangeAmount >= 0 ? '+$' : '-$'}${Math.abs(predChangeAmount).toFixed(2)} (${predChangePercent >= 0 ? '+' : ''}${predChangePercent}%)`;
+    document.getElementById('prediction-change').textContent = predChangeDisplay;
+    document.getElementById('prediction-change').className = predChangeAmount >= 0 ? 'change-up' : 'change-down';
+    
+    // Update confidence
+    document.getElementById('prediction-confidence').textContent = prediction.confidence + '%';
+    
+    // Update support and resistance levels
+    document.getElementById('support-level').textContent = '$' + prediction.support;
+    document.getElementById('resistance-level').textContent = '$' + prediction.resistance;
+    
+    // Update last update timestamp
+    document.getElementById('last-update').textContent = 'Last updated: ' + new Date().toLocaleTimeString();
+}
+
+// Update clock displays
+function updateClockDisplays() {
+    const now = new Date();
+    
+    // Local time
+    document.getElementById('local-time').textContent = now.toLocaleTimeString();
+    
+    // Eastern time (convert to US Eastern timezone)
+    try {
+        const options = { timeZone: 'America/New_York', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+        const easternTime = new Intl.DateTimeFormat('en-US', options).format(now);
+        document.getElementById('eastern-time').textContent = easternTime;
+    } catch (e) {
+        // Fallback if timezone conversion fails
+        document.getElementById('eastern-time').textContent = now.toLocaleTimeString();
+    }
+    
+    // Current time in header
+    document.getElementById('current-time').textContent = now.toLocaleTimeString();
+}
+
+// Check if market is open
+function checkMarketStatus() {
+    const now = new Date();
+    let marketOpen = false;
+    let marketBanner = document.getElementById('market-banner');
+    let marketStatus = document.getElementById('market-status');
+    let marketDescription = document.getElementById('market-description');
+    
+    // Check if selected stock is cryptocurrency
+    const isCrypto = selectedStock.includes('-USD');
+    if (isCrypto) {
+        // Crypto markets are always open
+        marketOpen = true;
+        marketBanner.className = 'market-banner market-open';
+        marketStatus.textContent = 'Crypto Market Open 24/7';
+        marketDescription.textContent = 'Cryptocurrency markets are open 24 hours a day, 7 days a week.';
+        return true;
+    }
+    
+    // For stock market, check if it's a weekday
+    const day = now.getDay();
+    if (day === 0 || day === 6) {
+        // Weekend
+        marketOpen = false;
+    } else {
+        // Try to get Eastern time
+        let hours, minutes;
+        try {
+            const options = { timeZone: 'America/New_York', hour: 'numeric', minute: 'numeric', hour12: false };
+            const easternTimeStr = new Intl.DateTimeFormat('en-US', options).format(now);
+            const [hoursStr, minutesStr] = easternTimeStr.split(':');
+            hours = parseInt(hoursStr);
+            minutes = parseInt(minutesStr);
+        } catch (e) {
+            // Fallback to local time if timezone conversion fails
+            hours = now.getHours();
+            minutes = now.getMinutes();
+        }
+        
+        // Market hours: 9:30 AM - 4:00 PM Eastern
+        if ((hours > 9 || (hours === 9 && minutes >= 30)) && hours < 16) {
+            marketOpen = true;
+        }
+    }
+    
+    // Update UI
+    if (marketOpen) {
+        marketBanner.className = 'market-banner market-open';
+        marketStatus.textContent = 'Market Currently Open';
+        marketDescription.textContent = 'Live trading hours: 9:30 AM - 4:00 PM ET, Monday-Friday.';
+    } else {
+        marketBanner.className = 'market-banner market-closed';
+        marketStatus.textContent = 'Market Currently Closed';
+        marketDescription.textContent = 'Regular trading hours are 9:30 AM - 4:00 PM ET, Monday-Friday.';
+    }
+    
+    return marketOpen;
+}
+
+// --- EVENT HANDLING ---
+// Setup event listeners
+function setupEventListeners() {
+    // Start buttons
+    document.getElementById('start-live').addEventListener('click', async () => {
+        document.getElementById('startup-overlay').style.display = 'none';
+        simulationMode = false;
+        document.getElementById('toggle-mode').classList.add('active');
+        document.getElementById('toggle-simulation').classList.remove('active');
+        document.getElementById('simulation-speed-control').style.display = 'none';
+        
+        // Initialize with real data
+        await initializeWithRealData();
+    });
+    
+    document.getElementById('start-simulation').addEventListener('click', () => {
+        document.getElementById('startup-overlay').style.display = 'none';
+        simulationMode = true;
+        document.getElementById('toggle-mode').classList.remove('active');
+        document.getElementById('toggle-simulation').classList.add('active');
+        document.getElementById('simulation-speed-control').style.display = 'flex';
+        
+        // Initialize with simulation
+        initializeWithSimulation();
+    });
+    
+    // Mode toggle buttons
+    document.getElementById('toggle-mode').addEventListener('click', async function() {
+        if (simulationMode) {
+            simulationMode = false;
+            this.classList.add('active');
+            document.getElementById('toggle-simulation').classList.remove('active');
+            document.getElementById('simulation-speed-control').style.display = 'none';
+            
+            // Stop simulation interval and start real data
+            clearInterval(updateInterval);
+            startRealDataUpdates();
+        }
+    });
+    
+    document.getElementById('toggle-simulation').addEventListener('click', function() {
+        if (!simulationMode) {
+            simulationMode = true;
+            this.classList.add('active');
+            document.getElementById('toggle-mode').classList.remove('active');
+            document.getElementById('simulation-speed-control').style.display = 'flex';
+            
+            // Stop real data interval and start simulation
+            clearInterval(updateInterval);
+            startSimulationUpdates();
+        }
+    });
+    
+    // Simulation speed controls
+    document.getElementById('speed-up').addEventListener('click', function() {
+        if (simulationSpeed < 10) {
+            simulationSpeed++;
+            document.getElementById('speed-display').textContent = simulationSpeed + 'x';
+        }
+    });
+    
+    document.getElementById('speed-down').addEventListener('click', function() {
+        if (simulationSpeed > 1) {
+            simulationSpeed--;
+            document.getElementById('speed-display').textContent = simulationSpeed + 'x';
+        }
+    });
+    
+    // Watchlist item clicks
+    document.querySelectorAll('.watchlist-item').forEach(item => {
+        item.addEventListener('click', function() {
+            // Deselect previous
+            document.querySelectorAll('.watchlist-item').forEach(i => i.classList.remove('selected'));
+            
+            // Select new
+            this.classList.add('selected');
+            selectedStock = this.getAttribute('data-symbol');
+            
+            // Update display with selected stock
+            updateSelectedStockDisplay();
+            updateCharts();
+            
+            // Check market status
+            checkMarketStatus();
+        });
+    });
+    
+    // Quantum settings
+    document.getElementById('entanglement-depth').addEventListener('input', function() {
+        entanglementDepth = parseInt(this.value);
+        document.getElementById('entanglement-value').textContent = this.value;
+    });
+    
+    document.getElementById('decoherence-threshold').addEventListener('input', function() {
+        decoherenceThreshold = parseInt(this.value);
+        document.getElementById('decoherence-value').textContent = this.value + '%';
+    });
+    
+    document.getElementById('apply-quantum-settings').addEventListener('click', function() {
+        updateQuantumVisualization();
+        updateSelectedStockDisplay(); // Recalculate prediction with new settings
+    });
+    
+    // Refresh rate change
+    document.getElementById('refresh-rate').addEventListener('change', function() {
+        updateSpeed = parseInt(this.value);
+        
+        // Restart updates with new interval
+        if (simulationMode) {
+            clearInterval(updateInterval);
+            startSimulationUpdates();
+        } else {
+            clearInterval(updateInterval);
+            startRealDataUpdates();
+        }
+    });
+    
+    // Coherence protocol change
+    document.getElementById('coherence-protocol').addEventListener('change', function() {
+        // Adjust coherence level based on selected protocol
+        const protocol = this.value;
+        switch(protocol) {
+            case 'QCA-DFS-1':
+                coherenceLevel = 85;
+                break;
+            case 'QCA-DEC-1':
+                coherenceLevel = 83;
+                break;
+            case 'QCA-TOP-1':
+                coherenceLevel = 89;
+                break;
+            case 'QCA-NMEE-1':
+                coherenceLevel = 87;
+                break;
+        }
+        
+        updateQuantumVisualization();
+        updateSelectedStockDisplay();
+    });
+}
+
+// --- INITIALIZATION FUNCTIONS ---
+// Initialize with real-time data
+async function initializeWithRealData() {
+    console.log("Initializing with real market data...");
+    
+    // Set initial time labels
+    timeLabels = generateTimeLabels();
+    
+    // Check market status
+    marketOpen = checkMarketStatus();
+    
+    try {
+        // Try to get real data for selected stock
+        const stockResult = await fetchRealTimeData(selectedStock);
+        
+        if (stockResult) {
+            // Update stockData with real values
+            stockData[selectedStock].price = stockResult.price;
+            stockData[selectedStock].change = stockResult.change;
+            stockData[selectedStock].changePercent = stockResult.changePercent;
+            stockData[selectedStock].prevClose = stockResult.prevClose;
+            
+            // Get historical data
+            const historyResult = await fetchHistoricalData(selectedStock);
+            if (historyResult) {
+                stockData[selectedStock].history = historyResult.prices;
+                stockData[selectedStock].volume = historyResult.volumes;
+                timeLabels = historyResult.times;
+            } else {
+                // If historical data fails, generate simulation
+                generateSimulatedHistory(selectedStock);
+            }
+        } else {
+            // If real-time data fails, use simulation
+            generateSimulatedHistory(selectedStock);
+        }
+        
+        // Create charts
+        createCharts();
+        
+        // Update quantum visualization
+        updateQuantumVisualization();
+        
+        // Update UI
+        updateWatchlistDisplay();
+        updateSelectedStockDisplay();
+        
+        // Start real-time updates
+        startRealDataUpdates();
+    } catch (error) {
+        console.error("Error initializing with real data:", error);
+        alert("Could not connect to market data API. Falling back to simulation mode.");
+        
+        // Fall back to simulation
+        simulationMode = true;
+        document.getElementById('toggle-mode').classList.remove('active');
+        document.getElementById('toggle-simulation').classList.add('active');
+        document.getElementById('simulation-speed-control').style.display = 'flex';
+        
+        initializeWithSimulation();
+    }
+}
+
+// Initialize with simulation
+function initializeWithSimulation() {
+    console.log("Initializing with simulation data");
+    
+    // Generate time labels
+    timeLabels = generateTimeLabels();
+    
+    // Generate simulation data for all stocks
+    Object.keys(stockData).forEach(symbol => {
+        generateSimulatedHistory(symbol);
+    });
+    
+    // Create charts
+    createCharts();
+    
+    // Update quantum visualization
+    updateQuantumVisualization();
+    
+    // Update UI
+    updateWatchlistDisplay();
+    updateSelectedStockDisplay();
+    
+    // Start simulation updates
+    startSimulationUpdates();
+}
+
+// Start real-time data updates
+function startRealDataUpdates() {
+    // Update clocks every second
+    setInterval(updateClockDisplays, 1000);
+    
+    // Check market status every minute
+    setInterval(() => {
+        marketOpen = checkMarketStatus();
+    }, 60000);
+    
+    // Start update interval for market data
+    updateInterval = setInterval(() => {
+        // Only update if market is open or it's a cryptocurrency
+        const isCrypto = selectedStock.includes('-USD');
+        
+        if (marketOpen || isCrypto) {
+            updateWithRealData();
+        } else {
+            console.log("Market closed, not updating real-time data");
+        }
+    }, updateSpeed);
+}
+
+// Start simulation updates
+function startSimulationUpdates() {
+    // Update clocks every second
+    setInterval(updateClockDisplays, 1000);
+    
+    // Start update interval for simulation
+    updateInterval = setInterval(() => {
+        // Simulate data updates based on simulation speed
+        for (let i = 0; i < simulationSpeed; i++) {
+            // Update prices for all stocks
+            Object.keys(stockData).forEach(symbol => {
+                updateSimulatedPrice(symbol);
+            });
+        }
+        
+        // Small random fluctuation in coherence level
+        coherenceLevel += (Math.random() - 0.5) * 0.4;
+        coherenceLevel = Math.min(95, Math.max(80, coherenceLevel));
+        
+        // Occasional quantum visualization update
+        if (Math.random() < 0.3) {
+            updateQuantumVisualization();
+        }
+        
+        // Update UI
+        updateWatchlistDisplay();
+        updateSelectedStockDisplay();
+        updateCharts();
+    }, updateSpeed);
+}
+
+// Initialize application
+function initialize() {
+    // Update initial quantum settings display
+    document.getElementById('entanglement-value').textContent = document.getElementById('entanglement-depth').value;
+    document.getElementById('decoherence-value').textContent = document.getElementById('decoherence-threshold').value + '%';
+    
+    // Setup event listeners
+    setupEventListeners();
+    
+    // Update clock displays
+    updateClockDisplays();
+    
+    // Display startup overlay
+    document.getElementById('startup-overlay').style.display = 'flex';
+}
+
+// Initialize application when DOM is loaded
+document.addEventListener('DOMContentLoaded', initialize);
